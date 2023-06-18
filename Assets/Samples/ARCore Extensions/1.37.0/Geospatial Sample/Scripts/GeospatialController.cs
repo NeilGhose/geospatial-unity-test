@@ -44,6 +44,9 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
     {
         [Header("AR Components")]
 
+
+	public scr controller;
+
         /// <summary>
         /// The ARSessionOrigin used in the sample.
         /// </summary>
@@ -744,7 +747,8 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
                 "Altitude: {4}m{0}" +
                 "Vertical Accuracy: {5}m{0}" +
                 "Eun Rotation: {6}{0}" +
-                "Orientation Yaw Accuracy: {7}°",
+                "Orientation Yaw Accuracy: {7}°{0}" +
+		"Status: {8}",
                 Environment.NewLine,
                 pose.Latitude.ToString("F6"),
                 pose.Longitude.ToString("F6"),
@@ -752,7 +756,8 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
                 pose.Altitude.ToString("F2"),
                 pose.VerticalAccuracy.ToString("F2"),
                 pose.EunRotation.ToString("F1"),
-                pose.OrientationYawAccuracy.ToString("F1"));
+                pose.OrientationYawAccuracy.ToString("F1"),
+		controller.status);
             }
             else
             {

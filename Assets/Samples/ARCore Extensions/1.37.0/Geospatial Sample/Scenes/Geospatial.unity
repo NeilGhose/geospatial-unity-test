@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18018535, g: 0.22559482, b: 0.30677685, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -747,20 +747,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ECEF:
-    x: -2672120.5210318277
-    y: -4279196.739686956
-    z: 3889490.7175635607
+    x: -2672120.521030589
+    y: -4279196.739684972
+    z: 3889490.7175665745
   EUN:
     x: -47.31999969482422
     y: 95.1500015258789
-    z: 55.7400016784668
+    z: 55.74000549316406
   EUS:
     x: -47.31999969482422
     y: 95.1500015258789
-    z: -55.7400016784668
+    z: -55.74000549316406
   shouldPosition: 1
   AltType: 0
-  _latitude: 37.817164874774306
+  _latitude: 37.817164874808675
   _longitude: -121.98248673567332
   _altitude: 95.15042111278112
   _altitudeOffset: 0
@@ -774,14 +774,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 182387674}
-  m_LocalRotation: {x: -0, y: 0.61610955, z: -0, w: 0.78766054}
-  m_LocalPosition: {x: -47.32, y: 95.15, z: 55.74}
-  m_LocalScale: {x: 0.31941, y: 0.105705544, z: 0.31941}
+  m_LocalRotation: {x: -0, y: 0.3439103, z: -0, w: 0.9390025}
+  m_LocalPosition: {x: -10.061629, y: 5.095054, z: 9.684877}
+  m_LocalScale: {x: 0.26928774, y: 0.26928774, z: 0.26928774}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 802213518}
-  m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_Father: {fileID: 552455647}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 76.065, z: 0}
 --- !u!1 &188321113
 GameObject:
@@ -1092,7 +1092,7 @@ Transform:
   - {fileID: 619525066}
   - {fileID: 1975988206}
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 35.835, z: 0}
 --- !u!1 &291930455
 GameObject:
@@ -1226,6 +1226,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75a1114bd37d249b08c83cfbaf234679, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  controller: {fileID: 2093644847}
   SessionOrigin: {fileID: 691323908}
   Session: {fileID: 193207847}
   AnchorManager: {fileID: 691323910}
@@ -1335,7 +1336,7 @@ Transform:
   - {fileID: 1721594916}
   - {fileID: 2117141509}
   m_Father: {fileID: 0}
-  m_RootOrder: 16
+  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 86.475, z: 0}
 --- !u!1 &430750537
 GameObject:
@@ -1638,8 +1639,9 @@ Transform:
   - {fileID: 1142074785}
   - {fileID: 556217180}
   - {fileID: 1813591659}
+  - {fileID: 182387676}
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 35.835, z: 0}
 --- !u!1 &556217179
 GameObject:
@@ -3455,7 +3457,7 @@ MonoBehaviour:
     z: -58.09000015258789
   shouldPosition: 1
   AltType: 0
-  _latitude: 37.81718604733441
+  _latitude: 37.8171860473344
   _longitude: -121.98148376436426
   _altitude: 94.15239730051577
   _altitudeOffset: 0
@@ -3944,7 +3946,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 99ef9a0ba1fa14389a61840cde2b3e72, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3982,12 +3984,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1107907811}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -44.668793, y: 96.28, z: 42.63232}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 18
+  m_RootOrder: 17
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1142074784
 GameObject:
@@ -4513,7 +4515,7 @@ Transform:
   - {fileID: 841546972}
   - {fileID: 1058651000}
   m_Father: {fileID: 0}
-  m_RootOrder: 15
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: -14.703, z: 0}
 --- !u!1 &1239467977
 GameObject:
@@ -7394,7 +7396,7 @@ Transform:
   - {fileID: 2004140534}
   - {fileID: 38742852}
   m_Father: {fileID: 0}
-  m_RootOrder: 14
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 35.835, z: 0}
 --- !u!1 &1967606260
 GameObject:
@@ -7811,7 +7813,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2051150144}
   - component: {fileID: 2051150143}
-  - component: {fileID: 2051150145}
   m_Layer: 0
   m_Name: AR Geospatial Creator Anchor 1
   m_TagString: Untagged
@@ -7868,21 +7869,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2051150145
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2051150142}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 796508a687fa3364ea1ebf7000fbdbc8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  EarthManager: {fileID: 0}
-  AnchorManager: {fileID: 0}
-  prefab: {fileID: 0}
 --- !u!1 &2093644846
 GameObject:
   m_ObjectHideFlags: 0
@@ -7915,6 +7901,7 @@ MonoBehaviour:
   EarthManager: {fileID: 691323912}
   AnchorManager: {fileID: 691323910}
   prefab: {fileID: 1107907811}
+  status: 
 --- !u!4 &2093644848
 Transform:
   m_ObjectHideFlags: 0
@@ -7928,7 +7915,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 17
+  m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2117141508
 GameObject:
