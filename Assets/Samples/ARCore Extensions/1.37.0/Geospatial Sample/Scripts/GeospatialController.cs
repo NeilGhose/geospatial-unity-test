@@ -45,7 +45,11 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
         [Header("AR Components")]
 
 
-	public scr controller;
+	    public scr controller;
+        public Button StartStopRecordingButton;
+        public void OnStartStopRecordingButtonClicked() {
+            controller.recclick();
+        }
 
         /// <summary>
         /// The ARSessionOrigin used in the sample.
@@ -460,6 +464,8 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
         /// </summary>
         public void OnEnable()
         {
+            StartStopRecordingButton.onClick.AddListener(OnStartStopRecordingButtonClicked);
+
             _startLocationService = StartLocationService();
             StartCoroutine(_startLocationService);
 
