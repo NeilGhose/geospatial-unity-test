@@ -464,7 +464,7 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
         /// </summary>
         public void OnEnable()
         {
-            StartStopRecordingButton.onClick.AddListener(OnStartStopRecordingButtonClicked);
+            // StartStopRecordingButton.onClick.AddListener(OnStartStopRecordingButtonClicked);
 
             _startLocationService = StartLocationService();
             StartCoroutine(_startLocationService);
