@@ -107,9 +107,7 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
             update_path(path[0], start_pref);
             for (int i = 1; i < path.Count - 1; i++) {
                 update_path(path[i], path_pref);
-                GameObject arrow = path[i].gameObject.transform.GetChild(0).gameObject;
-                GameObject next = path[i+1].gameObject;
-                look_at(arrow, next);
+                look_at(path[i].gameObject, path[i+1].gameObject);
             }
             update_path(path[path.Count - 1], end_pref);
         }
@@ -118,7 +116,7 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
             self.transform.LookAt(tgt.transform);
             self.transform.eulerAngles = new Vector3(
                 self.transform.eulerAngles.x,
-                self.transform.eulerAngles.y - 45,
+                self.transform.eulerAngles.y + 45,
                 self.transform.eulerAngles.z
             );
         }
