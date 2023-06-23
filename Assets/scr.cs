@@ -109,9 +109,18 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
                 update_path(path[i], path_pref);
                 GameObject arrow = path[i].gameObject.transform.GetChild(0).gameObject;
                 GameObject next = path[i+1].gameObject;
-                arrow.transform.LookAt(next.transform);
+                look_at(arrow, next);
             }
             update_path(path[path.Count - 1], end_pref);
+        }
+
+        private void look_at(GameObject self, GameObject tgt) {
+            self.transform.LookAt(tgt.transform);
+            self.transform.eulerAngles = new Vector3(
+                self.transform.eulerAngles.x,
+                self.transform.eulerAngles.y - 45,
+                self.transform.eulerAngles.z
+            );
         }
 
         private IEnumerator place_anchor()
