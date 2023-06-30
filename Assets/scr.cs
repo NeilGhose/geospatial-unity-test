@@ -31,7 +31,8 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
 	    public string status;
 
         private bool recording;
-        private List<ARGeospatialAnchor> path;
+        private List<ARGeospatialAnchor> rec_path;
+        private List<GeospatialPose> path;
         private GeospatialPose prev;
         private int counter;
 
@@ -43,7 +44,8 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
         {
             recording = false;
             status = "Begin";
-            path = new List<ARGeospatialAnchor>();
+            rec_path = new List<ARGeospatialAnchor>();
+            path = new List<GeospatialPose>();
             coroutine = place_anchor();
             counter = 0;
             // StartCoroutine(coroutine);
@@ -51,8 +53,7 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
 
         // Update is called once per frame
         void Update()
-        {
-        }
+        {}
 
         public void recclick() {
             counter++;
@@ -69,56 +70,58 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
             StopCoroutine(coroutine);
             if (localized()) {
                 GeospatialPose pos = EarthManager.CameraGeospatialPose;
-                ARGeospatialAnchor anchor = AnchorManager.AddAnchor(pos.Latitude, pos.Longitude, pos.Altitude-1, Quaternion.identity);
-                place_object(anchor);
+                place_rec_object(pos);
+                place_final_object(pos, end_pref, Quaternion.identity);
             }
             set_path();
-            status = "Recording Stopped" + counter.ToString();
+            // status = "Recording Stopped" + counter.ToString();
         }
 
         private void start_recording() {
             if (localized()) {
                 GeospatialPose pos = EarthManager.CameraGeospatialPose;
-                ARGeospatialAnchor anchor = AnchorManager.AddAnchor(pos.Latitude, pos.Longitude, pos.Altitude-1, Quaternion.identity);
                 prev = pos;
-                if (place_object(anchor)) StartCoroutine(coroutine);
+                if (place_rec_object(pos)) StartCoroutine(coroutine);
                 status = "Recording Started " + counter.ToString();
             }
         }
 
-        private bool place_object(ARGeospatialAnchor anchor, GameObject prefab=null, bool add_to_path=true) {
-            if (prefab == null) prefab = default_pref;
+        private bool place_anchor_GO(ARGeospatialAnchor anchor, GameObject prefab) {
             if (anchor != null) {
                 GameObject anchorGO = Instantiate(prefab, anchor.transform);
                 anchor.gameObject.SetActive(true);
                 anchorGO.transform.parent = anchor.gameObject.transform;
-                if (add_to_path) path.Add(anchor);
+
                 return true;
             }
             return false;
         }
 
-        private void update_path(ARGeospatialAnchor anchor, GameObject prefab) {
-            UnityEngine.Object.Destroy(anchor.gameObject.transform.GetChild(0).gameObject);
-            place_object(anchor, prefab, false);
+        private bool place_rec_object(GeospatialPose pos) {
+            ARGeospatialAnchor anchor = AnchorManager.AddAnchor(pos.Latitude, pos.Longitude, pos.Altitude-1, Quaternion.identity);
+            if (place_anchor_GO(anchor, default_pref)) {
+                rec_path.Add(anchor);
+                path.Add(pos);
+                return true;
+            }
+            return false;
+        }
+
+        private bool place_final_object(GeospatialPose pos, GameObject prefab, Quaternion dir) {
+            ARGeospatialAnchor anchor = AnchorManager.AddAnchor(pos.Latitude, pos.Longitude, pos.Altitude-1, dir);
+
+            return place_anchor_GO(anchor, prefab);
         }
 
         private void set_path() {
-            update_path(path[0], start_pref);
-            for (int i = 1; i < path.Count - 1; i++) {
-                update_path(path[i], path_pref);
-                look_at(path[i].gameObject, path[i+1].gameObject);
-            }
-            update_path(path[path.Count - 1], end_pref);
-        }
+            place_final_object(path[0], start_pref, Quaternion.identity);
 
-        private void look_at(GameObject self, GameObject tgt) {
-            self.transform.LookAt(tgt.transform);
-            self.transform.eulerAngles = new Vector3(
-                self.transform.eulerAngles.x,
-                self.transform.eulerAngles.y + 45,
-                self.transform.eulerAngles.z
-            );
+            for (int i = 1; i < path.Count - 1; i++) {
+                place_final_object(path[i], path_pref, Quaternion.LookRotation(rec_path[i+1].transform.position - rec_path[i].transform.position, Vector3.up));
+                // status += "\nself: " + path[i].transform.position.ToString() + " target: " + path[i+1].transform.position.ToString() + " rotation: " + path[i].transform.eulerAngles;
+            }
+            int c = rec_path.Count;
+            for (int i = 0; i<c; i++) UnityEngine.Object.Destroy(rec_path[i].gameObject);     
         }
 
         private IEnumerator place_anchor()
@@ -132,8 +135,7 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
                     GeospatialPose pos = EarthManager.CameraGeospatialPose;
                     if (path.Count > 0) {
                         if (Mathf.Pow((float)((prev.Latitude - pos.Latitude) * lat_to_feet), 2) + Mathf.Pow((float)((prev.Longitude - pos.Longitude) * lat_to_feet), 2) > 36) {
-                            ARGeospatialAnchor anchor = AnchorManager.AddAnchor(pos.Latitude, pos.Longitude, pos.Altitude-1, Quaternion.identity);
-                            if (place_object(anchor)) {
+                            if (place_rec_object(pos)) {
                                 prev = pos;
                                 status = string.Format("Recording: Placed at {0}°, {1}°", 
                                 pos.Latitude.ToString("F6"),
