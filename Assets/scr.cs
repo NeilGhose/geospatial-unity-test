@@ -31,30 +31,42 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
 	    public string status;
 
         private bool recording;
+        private bool ready;
         private List<ARGeospatialAnchor> rec_path;
         private List<GeospatialPose> path;
         private GeospatialPose prev;
         private int counter;
 
-        private const int lat_to_feet = 364000;
-        private const int long_to_feet = 288200;
+        private const double lat_to_miles = 69;
+        private const double long_to_miles = 54.7;
+        private const double meters_to_miles = 0.000621371;
 
         // Start is called before the first frame update
         void Start()
         {
             recording = false;
+            ready = false;
             status = "Begin";
             rec_path = new List<ARGeospatialAnchor>();
             path = new List<GeospatialPose>();
+            StartCoroutine(on_start_after_loc());
             coroutine = place_anchor();
             counter = 0;
-            // StartCoroutine(coroutine);
         }
 
         // Update is called once per frame
-        void Update()
-        {}
+        void Update(){}
 
+        private IEnumerator on_start_after_loc() {
+            while (!localized()) yield return new WaitForSeconds(0.1f);
+            GeospatialPose pos = EarthManager.CameraGeospatialPose;
+            if (!ready && Mathf.Pow((float)((origin.latitude - pos.Latitude) * lat_to_miles), 2) + Mathf.Pow((float)((origin.longitude - pos.Longitude) * long_to_miles), 2) > 225) {
+                origin.latitude = pos.Latitude;
+                origin.longitude = pos.Longitude;
+            }
+            ready = true;
+            if (path.Count > 0) set_path();
+        }
         public void recclick() {
             counter++;
             if (recording) stop_recording();
@@ -66,19 +78,25 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
             return ARSession.state == ARSessionState.SessionTracking && Input.location.status == LocationServiceStatus.Running && EarthManager.EarthTrackingState == TrackingState.Tracking;
         }
 
+        private bool localized_and_ready() {
+            return ready && localized();
+        }
+
         private void stop_recording() {
             StopCoroutine(coroutine);
-            if (localized()) {
+            if (localized_and_ready()) {
                 GeospatialPose pos = EarthManager.CameraGeospatialPose;
                 place_rec_object(pos);
                 place_final_object(pos, end_pref, Quaternion.identity);
             }
             set_path();
+            rec_path = new List<ARGeospatialAnchor>();
+            path = new List<GeospatialPose>();
             // status = "Recording Stopped" + counter.ToString();
         }
 
         private void start_recording() {
-            if (localized()) {
+            if (localized_and_ready()) {
                 GeospatialPose pos = EarthManager.CameraGeospatialPose;
                 prev = pos;
                 if (place_rec_object(pos)) StartCoroutine(coroutine);
@@ -108,20 +126,31 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
         }
 
         private bool place_final_object(GeospatialPose pos, GameObject prefab, Quaternion dir) {
+            Debug.Log("place_final_object");
+            Debug.Log(dir.ToString());
             ARGeospatialAnchor anchor = AnchorManager.AddAnchor(pos.Latitude, pos.Longitude, pos.Altitude-1, dir);
 
             return place_anchor_GO(anchor, prefab);
         }
 
         private void set_path() {
+            Debug.Log("set_path");
+            Debug.Log(path[0].Latitude.ToString() + ", " + path[0].Longitude.ToString() + ", " + path[0].Altitude.ToString());
             place_final_object(path[0], start_pref, Quaternion.identity);
+            Debug.Log("set_path2");
 
             for (int i = 1; i < path.Count - 1; i++) {
-                place_final_object(path[i], path_pref, Quaternion.LookRotation(rec_path[i+1].transform.position - rec_path[i].transform.position, Vector3.up));
+                Debug.Log(i);
+                Vector3 rel_pos = new Vector3(
+                    (float)((path[i+1].Latitude - path[i].Latitude) * lat_to_miles), 
+                    (float)((path[i+1].Longitude - path[i].Longitude) * lat_to_miles),
+                    (float)((path[i+1].Altitude - path[i].Altitude) * meters_to_miles));
+                place_final_object(path[i], path_pref, Quaternion.LookRotation(rel_pos, Vector3.up));
                 // status += "\nself: " + path[i].transform.position.ToString() + " target: " + path[i+1].transform.position.ToString() + " rotation: " + path[i].transform.eulerAngles;
             }
             int c = rec_path.Count;
-            for (int i = 0; i<c; i++) UnityEngine.Object.Destroy(rec_path[i].gameObject);     
+            for (int i = 0; i<c; i++) UnityEngine.Object.Destroy(rec_path[i].gameObject);
+            path = new List<GeospatialPose>();
         }
 
         private IEnumerator place_anchor()
@@ -130,11 +159,11 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
                 yield return new WaitForSeconds(0.1f);
 		        status = "Waiting";
                 
-                if (localized()) {
+                if (localized_and_ready()) {
                     status = "Good";
                     GeospatialPose pos = EarthManager.CameraGeospatialPose;
                     if (path.Count > 0) {
-                        if (Mathf.Pow((float)((prev.Latitude - pos.Latitude) * lat_to_feet), 2) + Mathf.Pow((float)((prev.Longitude - pos.Longitude) * lat_to_feet), 2) > 36) {
+                        if (Mathf.Pow((float)((prev.Latitude - pos.Latitude) * lat_to_miles * 5280), 2) + Mathf.Pow((float)((prev.Longitude - pos.Longitude) * lat_to_miles * 5280), 2) > 36) {
                             if (place_rec_object(pos)) {
                                 prev = pos;
                                 status = string.Format("Recording: Placed at {0}°, {1}°", 
@@ -143,12 +172,21 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
                             }
                         }
                     }
-                    // if (Mathf.Pow((float)((origin.latitude - pos.Latitude) * lat_to_feet), 2) + Mathf.Pow((float)((origin.longitude - pos.Longitude) * long_to_feet), 2) > 6400000000) {
-                    //     origin.latitude = pos.Latitude;
-                    //     origin.longitude = pos.Longitude;
-                    // }
                 }
             }
+        }
+
+        public void geojson_to_path(List<List<double>> path_data){
+            path = new List<GeospatialPose>();
+            for (int i = 0; i < path_data.Count; i++) {
+                GeospatialPose p = new GeospatialPose();
+                p.Latitude = path_data[i][0];
+                p.Longitude = path_data[i][1];
+                p.Altitude = path_data[i][2];
+                path.Add(p);
+                Debug.Log(p.Latitude.ToString() + ", " + p.Longitude.ToString() + ", " + p.Altitude.ToString());
+            }
+            on_start_after_loc();
         }
     }
 }

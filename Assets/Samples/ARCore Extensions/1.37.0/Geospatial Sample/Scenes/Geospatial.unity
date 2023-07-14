@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18018535, g: 0.22559482, b: 0.30677685, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1158,6 +1158,51 @@ Transform:
   - {fileID: 156367071}
   m_Father: {fileID: 0}
   m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &298629703
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 298629705}
+  - component: {fileID: 298629704}
+  m_Layer: 0
+  m_Name: gcloudcontroller
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &298629704
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 298629703}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b7b4b9cabb550b4db1ed1d31166e0df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controller: {fileID: 2093644847}
+--- !u!4 &298629705
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 298629703}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 23.65759, y: 81.52819, z: 58.790863}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 18
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &353487779
 GameObject:
@@ -7952,22 +7997,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ECEF:
-    x: -2672122.5985707133
-    y: -4279215.953005821
-    z: 3889470.1452032253
+    x: -2672122.6422835723
+    y: -4279215.909733024
+    z: 3889470.1647909344
   EUN:
-    x: 9.30999755859375
-    y: 96.27999877929688
-    z: 24.680002212524414
+    x: 9.25
+    y: 96.28130340576172
+    z: 24.703784942626953
   EUS:
-    x: 9.30999755859375
-    y: 96.27999877929688
-    z: -24.680002212524414
+    x: 9.25
+    y: 96.28130340576172
+    z: -24.703784942626953
   shouldPosition: 1
   AltType: 0
-  _latitude: 37.81692235294491
-  _longitude: -121.98239117433641
-  _altitude: 96.28005345517283
+  _latitude: 37.81692256721454
+  _longitude: -121.98239185572632
+  _altitude: 96.28135808654665
   _altitudeOffset: 0
   _geoRefLatitude: 37.8167
   _geoRefLongitude: -121.9824969076526
@@ -7980,7 +8025,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2051150142}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 9.309998, y: 96.28, z: 24.680002}
+  m_LocalPosition: {x: 9.25, y: 96.2813, z: 24.703785}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
