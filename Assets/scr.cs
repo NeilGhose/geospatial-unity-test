@@ -87,7 +87,6 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
             if (localized_and_ready()) {
                 GeospatialPose pos = EarthManager.CameraGeospatialPose;
                 place_rec_object(pos);
-                place_final_object(pos, end_pref, Quaternion.identity);
             }
             set_path();
             rec_path = new List<ARGeospatialAnchor>();
@@ -126,8 +125,9 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
         }
 
         private bool place_final_object(GeospatialPose pos, GameObject prefab, Quaternion dir) {
-            Debug.Log("place_final_object");
+            Debug.Log("place_final_object=======================");
             Debug.Log(dir.ToString());
+            Debug.Log(pos.Latitude.ToString() + ", " + pos.Longitude.ToString() + ", " + pos.Altitude.ToString());
             ARGeospatialAnchor anchor = AnchorManager.AddAnchor(pos.Latitude, pos.Longitude, pos.Altitude-1, dir);
 
             return place_anchor_GO(anchor, prefab);
@@ -142,12 +142,15 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
             for (int i = 1; i < path.Count - 1; i++) {
                 Debug.Log(i);
                 Vector3 rel_pos = new Vector3(
-                    (float)((path[i+1].Latitude - path[i].Latitude) * lat_to_miles), 
-                    (float)((path[i+1].Longitude - path[i].Longitude) * lat_to_miles),
-                    (float)((path[i+1].Altitude - path[i].Altitude) * meters_to_miles));
+                    (float)((path[i+1].Longitude - path[i].Longitude) * lat_to_miles), 
+                    (float)((path[i+1].Altitude - path[i].Altitude) * meters_to_miles),
+                    (float)((path[i+1].Latitude - path[i].Latitude) * lat_to_miles));
                 place_final_object(path[i], path_pref, Quaternion.LookRotation(rel_pos, Vector3.up));
                 // status += "\nself: " + path[i].transform.position.ToString() + " target: " + path[i+1].transform.position.ToString() + " rotation: " + path[i].transform.eulerAngles;
             }
+
+            place_final_object(path[path.Count - 1], end_pref, Quaternion.identity);
+
             int c = rec_path.Count;
             for (int i = 0; i<c; i++) UnityEngine.Object.Destroy(rec_path[i].gameObject);
             path = new List<GeospatialPose>();
@@ -180,13 +183,13 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
             path = new List<GeospatialPose>();
             for (int i = 0; i < path_data.Count; i++) {
                 GeospatialPose p = new GeospatialPose();
-                p.Latitude = path_data[i][0];
-                p.Longitude = path_data[i][1];
+                p.Longitude = path_data[i][0];
+                p.Latitude = path_data[i][1];
                 p.Altitude = path_data[i][2];
                 path.Add(p);
                 Debug.Log(p.Latitude.ToString() + ", " + p.Longitude.ToString() + ", " + p.Altitude.ToString());
             }
-            on_start_after_loc();
+            StartCoroutine(on_start_after_loc());
         }
     }
 }
