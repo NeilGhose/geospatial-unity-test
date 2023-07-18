@@ -180,6 +180,7 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
         }
 
         public void geojson_to_path(List<List<double>> path_data){
+            Debug.Log("geojson_to_path");
             path = new List<GeospatialPose>();
             for (int i = 0; i < path_data.Count; i++) {
                 GeospatialPose p = new GeospatialPose();
@@ -190,6 +191,20 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
                 Debug.Log(p.Latitude.ToString() + ", " + p.Longitude.ToString() + ", " + p.Altitude.ToString());
             }
             StartCoroutine(on_start_after_loc());
+        }
+
+        public string path_to_geojson() {
+            string geojson = "{\"type\":\"Feature\",\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[";
+            for (int i = 0; i < path.Count; i++) {
+                geojson += "[" + path[i].Longitude.ToString() + "," + path[i].Latitude.ToString() + "," + path[i].Altitude.ToString() + "]";
+                if (i < path.Count - 1) geojson += ",";
+            }
+            geojson += "]}}";
+            return geojson;
+        }
+
+        public bool full_path() {
+            return path.Count > 0;
         }
     }
 }

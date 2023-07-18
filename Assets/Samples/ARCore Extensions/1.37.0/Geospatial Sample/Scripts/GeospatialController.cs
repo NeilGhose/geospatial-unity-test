@@ -51,6 +51,16 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
             controller.recclick();
         }
 
+        public gcloud gcloud;
+        public Button UploadButton;
+        public void OnUploadButtonClicked() {
+            string data = controller.path_to_geojson();
+            // name the file based on the current time
+            DateTime now = DateTime.Now;
+            string name = now.ToString("yyyy-MM-dd-HH-mm-ss") + ".geojson";
+            StartCoroutine(gcloud.postData(name, data));
+        }
+
         /// <summary>
         /// The ARSessionOrigin used in the sample.
         /// </summary>
@@ -754,7 +764,8 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
                 "Vertical Accuracy: {5}m{0}" +
                 "Eun Rotation: {6}{0}" +
                 "Orientation Yaw Accuracy: {7}°{0}" +
-		"Status: {8}",
+                "Status: {8}{0}" + 
+                "Gcloud Status: {9}",
                 Environment.NewLine,
                 pose.Latitude.ToString("F6"),
                 pose.Longitude.ToString("F6"),
@@ -763,7 +774,8 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
                 pose.VerticalAccuracy.ToString("F2"),
                 pose.EunRotation.ToString("F1"),
                 pose.OrientationYawAccuracy.ToString("F1"),
-		controller.status);
+		        controller.status,
+                gcloud.status);
             }
             else
             {
