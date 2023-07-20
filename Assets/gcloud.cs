@@ -17,8 +17,13 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
         {
             status = "Retrieving data";
             paths = new List<List<List<double>>>();
-            StartCoroutine(getBucketData("https://storage.googleapis.com/storage/v1/b/path-data/o"));
             // StartCoroutine(postData("test5.geojson", "{\"type\":\"Feature\",\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-122.084,37.4219983,0],[-122.084,37.4219983,0]]}}"));
+            StartCoroutine(waitUntilReady());
+        }
+
+        IEnumerator waitUntilReady() {
+            while (!controller.localized_and_ready()) yield return new WaitForSeconds(.5f);
+            StartCoroutine(getBucketData("https://storage.googleapis.com/storage/v1/b/path-data/o"));
         }
 
         IEnumerator getBucketData(string url) {
@@ -27,13 +32,18 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
             yield return www.SendWebRequest();
             if (www.error != null) Debug.Log(www.error);
             else {
+                int num_paths = 0;
                 string data = www.downloadHandler.text;
+                status = "Files found: ";
                 while (data.Contains("name\": \"")) {
+                    num_paths++;
                     data = data[(data.IndexOf("name\": \"") + 8)..];
                     string name = data[..data.IndexOf("\"")];
+                    status += name + ", ";
                     StartCoroutine(getData("https://storage.googleapis.com/path-data/" + name));
                 }
                 status = "All buckets retrieved";
+                StartCoroutine(waitForPathsData(num_paths));
             }
         }
 
@@ -45,21 +55,29 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
             if (www.error != null) Debug.Log(www.error);
             else {
                 string data = www.downloadHandler.text;
-                data = data[(data.IndexOf("coordinates\":[[") + 15)..];
-                data = data[..data.IndexOf("]]")];
-                string[] points = data.Split("],[");
                 List<List<double>> path = new List<List<double>>();
-                for (int i = 0; i < points.Length; i++) {
-                    path.Add(new List<double>());
-                    string[] point = points[i].Split(",");
-                    for (int j = 0; j < point.Length; j++) {
-                        path[i].Add(double.Parse(point[j]));
+
+                if (data.Contains("coordinates\":[[")) {
+                    data = data[(data.IndexOf("coordinates\":[[") + 15)..];
+                    data = data[..data.IndexOf("]]")];
+                    string[] points = data.Split("],[");
+                    for (int i = 0; i < points.Length; i++) {
+                        path.Add(new List<double>());
+                        string[] point = points[i].Split(",");
+                        for (int j = 0; j < point.Length; j++) {
+                            path[i].Add(double.Parse(point[j]));
+                        }
                     }
                 }
+
                 paths.Add(path);
                 status = "File " + url[(url.LastIndexOf("/") + 1)..] + " retrieved";
                 Debug.Log("status: " + status);
             }
+        }
+
+        IEnumerator waitForPathsData(int num_paths) {
+            while (num_paths > paths.Count) yield return new WaitForSeconds(0.1f);
             StartCoroutine(sendPathsData());
         }
 
@@ -68,7 +86,7 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
             Debug.Log("sendPathsData");
             Debug.Log("paths.Count: " + paths.Count);
             while (paths.Count > 0){
-                if (controller.full_path()) yield return new WaitForSeconds(0.1f);
+                while (!controller.path_placed) yield return new WaitForSeconds(0.1f);
                 controller.geojson_to_path(paths[0]);
                 paths.RemoveAt(0);
             }
