@@ -85,6 +85,9 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
             StopCoroutine(coroutine);
             if (localized_and_ready()) {
                 GeospatialPose pos = EarthManager.CameraGeospatialPose;
+                UnityEngine.Object.Destroy(rec_path[rec_path.Count-1].gameObject);
+                rec_path.RemoveAt(rec_path.Count-1);
+                path.RemoveAt(path.Count-1);
                 place_rec_object(pos);
             }
             set_path();
