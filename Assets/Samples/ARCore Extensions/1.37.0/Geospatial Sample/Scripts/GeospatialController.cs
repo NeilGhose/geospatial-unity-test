@@ -489,7 +489,7 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
             TerrainAnchorToggle.gameObject.SetActive(false);
             RooftopAnchorToggle.gameObject.SetActive(false);
             ClearAllButton.gameObject.SetActive(false);
-            DebugText.gameObject.SetActive(Debug.isDebugBuild && EarthManager != null);
+            // DebugText.gameObject.SetActive(Debug.isDebugBuild && EarthManager != null);
             GeometryToggle.onValueChanged.AddListener(OnGeometryToggled);
             AnchorSettingButton.onClick.AddListener(OnAnchorSettingButtonClicked);
             GeospatialAnchorToggle.onValueChanged.AddListener(OnGeospatialAnchorToggled);
@@ -673,9 +673,9 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
                 // Finished localization.
                 _isLocalizing = false;
                 _localizationPassedTime = 0f;
-                GeometryToggle.gameObject.SetActive(true);
-                AnchorSettingButton.gameObject.SetActive(true);
-                ClearAllButton.gameObject.SetActive(_anchorObjects.Count > 0);
+                // GeometryToggle.gameObject.SetActive(true);
+                // AnchorSettingButton.gameObject.SetActive(true);
+                // ClearAllButton.gameObject.SetActive(_anchorObjects.Count > 0);
                 SnackBarText.text = _localizationSuccessMessage;
                 foreach (var go in _anchorObjects)
                 {
@@ -750,11 +750,11 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
                 }
                 else
                 {
-                    AnchorSettingButton.gameObject.SetActive(true);
+                    // AnchorSettingButton.gameObject.SetActive(true);
                 }
             }
 
-            InfoPanel.SetActive(true);
+            // InfoPanel.SetActive(true);
             if (earthTrackingState == TrackingState.Tracking)
             {
                 InfoText.text = string.Format(
@@ -886,10 +886,10 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
         /// <param name="state">A bool value to determine if the anchor settings panel is visible.
         private void SetAnchorPanelState(bool state)
         {
-            AnchorSettingPanel.gameObject.SetActive(state);
-            GeospatialAnchorToggle.gameObject.SetActive(state);
-            TerrainAnchorToggle.gameObject.SetActive(state);
-            RooftopAnchorToggle.gameObject.SetActive(state);
+            // AnchorSettingPanel.gameObject.SetActive(state);
+            // GeospatialAnchorToggle.gameObject.SetActive(state);
+            // TerrainAnchorToggle.gameObject.SetActive(state);
+            // RooftopAnchorToggle.gameObject.SetActive(state);
         }
 
         private IEnumerator CheckRooftopPromise(ResolveAnchorOnRooftopPromise promise,
@@ -925,7 +925,7 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
 
                 SnackBarText.text = GetDisplayStringForAnchorPlacedSuccess();
 
-                ClearAllButton.gameObject.SetActive(_anchorObjects.Count > 0);
+                // ClearAllButton.gameObject.SetActive(_anchorObjects.Count > 0);
                 SaveGeospatialAnchorHistory();
             }
             else
@@ -964,7 +964,7 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
 
                 SnackBarText.text = GetDisplayStringForAnchorPlacedSuccess();
 
-                ClearAllButton.gameObject.SetActive(_anchorObjects.Count > 0);
+                // ClearAllButton.gameObject.SetActive(_anchorObjects.Count > 0);
                 SaveGeospatialAnchorHistory();
             }
             else
@@ -990,85 +990,85 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
 
         private void PlaceAnchorByScreenTap(Vector2 position)
         {
-            if (_streetscapeGeometryVisibility)
-            {
-                // Raycast against streetscapeGeometry.
-                List<XRRaycastHit> hitResults = new List<XRRaycastHit>();
-                if (RaycastManager.RaycastStreetscapeGeometry(position, ref hitResults))
-                {
-                    if (_anchorType == AnchorType.Rooftop || _anchorType == AnchorType.Terrain)
-                    {
-                        var streetscapeGeometry =
-                            StreetscapeGeometryManager.GetStreetscapeGeometry(
-                                hitResults[0].trackableId);
-                        if (streetscapeGeometry == null)
-                        {
-                            return;
-                        }
+            // if (_streetscapeGeometryVisibility)
+            // {
+            //     // Raycast against streetscapeGeometry.
+            //     List<XRRaycastHit> hitResults = new List<XRRaycastHit>();
+            //     if (RaycastManager.RaycastStreetscapeGeometry(position, ref hitResults))
+            //     {
+            //         if (_anchorType == AnchorType.Rooftop || _anchorType == AnchorType.Terrain)
+            //         {
+            //             var streetscapeGeometry =
+            //                 StreetscapeGeometryManager.GetStreetscapeGeometry(
+            //                     hitResults[0].trackableId);
+            //             if (streetscapeGeometry == null)
+            //             {
+            //                 return;
+            //             }
 
-                        if (_streetscapegeometryGOs.ContainsKey(streetscapeGeometry.trackableId))
-                        {
-                            Pose modifiedPose = new Pose(hitResults[0].pose.position,
-                                Quaternion.LookRotation(Vector3.right, Vector3.up));
+            //             if (_streetscapegeometryGOs.ContainsKey(streetscapeGeometry.trackableId))
+            //             {
+            //                 Pose modifiedPose = new Pose(hitResults[0].pose.position,
+            //                     Quaternion.LookRotation(Vector3.right, Vector3.up));
 
-                            GeospatialAnchorHistory history =
-                                CreateHistory(modifiedPose, _anchorType);
+            //                 GeospatialAnchorHistory history =
+            //                     CreateHistory(modifiedPose, _anchorType);
 
-                            // Anchor returned will be null, the coroutine will handle creating
-                            // the anchor when the promise is done.
-                            PlaceARAnchor(history, modifiedPose, hitResults[0].trackableId);
-                        }
-                    }
-                    else
-                    {
-                        GeospatialAnchorHistory history = CreateHistory(hitResults[0].pose,
-                            _anchorType);
-                        var anchor = PlaceARAnchor(history, hitResults[0].pose,
-                            hitResults[0].trackableId);
-                        if (anchor != null)
-                        {
-                            _historyCollection.Collection.Add(history);
-                        }
+            //                 // Anchor returned will be null, the coroutine will handle creating
+            //                 // the anchor when the promise is done.
+            //                 PlaceARAnchor(history, modifiedPose, hitResults[0].trackableId);
+            //             }
+            //         }
+            //         else
+            //         {
+            //             GeospatialAnchorHistory history = CreateHistory(hitResults[0].pose,
+            //                 _anchorType);
+            //             var anchor = PlaceARAnchor(history, hitResults[0].pose,
+            //                 hitResults[0].trackableId);
+            //             if (anchor != null)
+            //             {
+            //                 _historyCollection.Collection.Add(history);
+            //             }
 
-                        ClearAllButton.gameObject.SetActive(_anchorObjects.Count > 0);
-                        SaveGeospatialAnchorHistory();
-                    }
-                }
+            //             // ClearAllButton.gameObject.SetActive(_anchorObjects.Count > 0);
+            //             SaveGeospatialAnchorHistory();
+            //         }
+            //     }
 
-                return;
-            }
+            //     return;
+            // }
 
-            // Raycast against detected planes.
-            List<ARRaycastHit> planeHitResults = new List<ARRaycastHit>();
-            RaycastManager.Raycast(
-                position, planeHitResults, TrackableType.Planes | TrackableType.FeaturePoint);
-            if (planeHitResults.Count > 0)
-            {
-                GeospatialAnchorHistory history = CreateHistory(planeHitResults[0].pose,
-                    _anchorType);
+            // // Raycast against detected planes.
+            // List<ARRaycastHit> planeHitResults = new List<ARRaycastHit>();
+            // RaycastManager.Raycast(
+            //     position, planeHitResults, TrackableType.Planes | TrackableType.FeaturePoint);
+            // if (planeHitResults.Count > 0)
+            // {
+            //     GeospatialAnchorHistory history = CreateHistory(planeHitResults[0].pose,
+            //         _anchorType);
 
-                if (_anchorType == AnchorType.Rooftop)
-                {
-                    // The coroutine will create the anchor when the promise is done.
-                    Quaternion eunRotation = CreateRotation(history);
-                    ResolveAnchorOnRooftopPromise rooftopPromise =
-                        AnchorManager.ResolveAnchorOnRooftopAsync(
-                            history.Latitude, history.Longitude,
-                            0, eunRotation);
+            //     if (_anchorType == AnchorType.Rooftop)
+            //     {
+            //         // The coroutine will create the anchor when the promise is done.
+            //         Quaternion eunRotation = CreateRotation(history);
+            //         ResolveAnchorOnRooftopPromise rooftopPromise =
+            //             AnchorManager.ResolveAnchorOnRooftopAsync(
+            //                 history.Latitude, history.Longitude,
+            //                 0, eunRotation);
 
-                    StartCoroutine(CheckRooftopPromise(rooftopPromise, history));
-                    return;
-                }
+            //         StartCoroutine(CheckRooftopPromise(rooftopPromise, history));
+            //         return;
+            //     }
 
-                var anchor = PlaceGeospatialAnchor(history);
-                if (anchor != null)
-                {
-                    _historyCollection.Collection.Add(history);
-                }
+            //     var anchor = PlaceGeospatialAnchor(history);
+            //     if (anchor != null)
+            //     {
+            //         _historyCollection.Collection.Add(history);
+            //     }
 
-                ClearAllButton.gameObject.SetActive(_anchorObjects.Count > 0);
-                SaveGeospatialAnchorHistory();
-            }
+            //     // ClearAllButton.gameObject.SetActive(_anchorObjects.Count > 0);
+            //     SaveGeospatialAnchorHistory();
+            // }
         }
 
         private GeospatialAnchorHistory CreateHistory(Pose pose, AnchorType anchorType)
@@ -1131,7 +1131,7 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
                     {
                         _anchorObjects.Add(anchor.gameObject);
                         _historyCollection.Collection.Add(history);
-                        ClearAllButton.gameObject.SetActive(_anchorObjects.Count > 0);
+                        // ClearAllButton.gameObject.SetActive(_anchorObjects.Count > 0);
                         SaveGeospatialAnchorHistory();
 
                         SnackBarText.text = GetDisplayStringForAnchorPlacedSuccess();
@@ -1177,7 +1177,7 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
                 GameObject anchorGO = history.AnchorType == AnchorType.Geospatial ?
                     Instantiate(GeospatialPrefab, anchor.transform) :
                     Instantiate(TerrainPrefab, anchor.transform);
-                anchor.gameObject.SetActive(!terrain);
+                // anchor.gameObject.SetActive(!terrain);
                 anchorGO.transform.parent = anchor.gameObject.transform;
                 _anchorObjects.Add(anchor.gameObject);
             }
@@ -1213,7 +1213,7 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
                 }
             }
 
-            ClearAllButton.gameObject.SetActive(_anchorObjects.Count > 0);
+            // ClearAllButton.gameObject.SetActive(_anchorObjects.Count > 0);
             SnackBarText.text = string.Format("{0} anchor(s) set from history.",
                 _anchorObjects.Count);
         }
@@ -1333,7 +1333,7 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
 
             Debug.LogFormat("VPS Availability at ({0}, {1}): {2}",
                 location.latitude, location.longitude, vpsAvailabilityPromise.Result);
-            VPSCheckCanvas.SetActive(vpsAvailabilityPromise.Result != VpsAvailability.Available);
+            // VPSCheckCanvas.SetActive(vpsAvailabilityPromise.Result != VpsAvailability.Available);
         }
 
         private IEnumerator StartLocationService()
@@ -1459,20 +1459,20 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
                 EarthManager.EarthTrackingState == TrackingState.Tracking ?
                 EarthManager.CameraGeospatialPose : new GeospatialPose();
             var supported = EarthManager.IsGeospatialModeSupported(GeospatialMode.Enabled);
-            DebugText.text =
-                $"IsReturning: {_isReturning}\n" +
-                $"IsLocalizing: {_isLocalizing}\n" +
-                $"SessionState: {ARSession.state}\n" +
-                $"LocationServiceStatus: {Input.location.status}\n" +
-                $"FeatureSupported: {supported}\n" +
-                $"EarthState: {EarthManager.EarthState}\n" +
-                $"EarthTrackingState: {EarthManager.EarthTrackingState}\n" +
-                $"  LAT/LNG: {pose.Latitude:F6}, {pose.Longitude:F6}\n" +
-                $"  HorizontalAcc: {pose.HorizontalAccuracy:F6}\n" +
-                $"  ALT: {pose.Altitude:F2}\n" +
-                $"  VerticalAcc: {pose.VerticalAccuracy:F2}\n" +
-                $". EunRotation: {pose.EunRotation:F2}\n" +
-                $"  OrientationYawAcc: {pose.OrientationYawAccuracy:F2}";
+            // DebugText.text =
+            //     $"IsReturning: {_isReturning}\n" +
+            //     $"IsLocalizing: {_isLocalizing}\n" +
+            //     $"SessionState: {ARSession.state}\n" +
+            //     $"LocationServiceStatus: {Input.location.status}\n" +
+            //     $"FeatureSupported: {supported}\n" +
+            //     $"EarthState: {EarthManager.EarthState}\n" +
+            //     $"EarthTrackingState: {EarthManager.EarthTrackingState}\n" +
+            //     $"  LAT/LNG: {pose.Latitude:F6}, {pose.Longitude:F6}\n" +
+            //     $"  HorizontalAcc: {pose.HorizontalAccuracy:F6}\n" +
+            //     $"  ALT: {pose.Altitude:F2}\n" +
+            //     $"  VerticalAcc: {pose.VerticalAccuracy:F2}\n" +
+            //     $". EunRotation: {pose.EunRotation:F2}\n" +
+            //     $"  OrientationYawAcc: {pose.OrientationYawAccuracy:F2}";
         }
 
         /// <summary>
